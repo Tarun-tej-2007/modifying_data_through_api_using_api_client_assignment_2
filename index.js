@@ -1,15 +1,23 @@
 const express = require('express');
-const { resolve } = require('path');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const menuRoutes = require('./routes/menu');
 
 const app = express();
-const port = 3010;
+const port = process.env.PORT || 3000;
 
-app.use(express.static('static'));
+// Middleware
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
-});
+// MongoDB Atlas connection
+const mongoURI = 'mongodb+srv://taruntej947:qXwyBVdljaYy4Kmq@cluster0.hcdp4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
+
+// Routes
+app.use('/menu', menuRoutes);
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Server running on port http://localhost:${port}`);
 });
